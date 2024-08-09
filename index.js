@@ -1,4 +1,3 @@
-import { Plugin } from "@vencord/plugin";
 
 export default class ColorPickerPlugin extends Plugin {
   start() {
