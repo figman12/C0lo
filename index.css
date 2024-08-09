@@ -1,0 +1,48 @@
+/* Styling the custom button */
+.custom-button {
+  background-color: var(--custom-button-bg-color, #7289da);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Add a hover effect */
+.custom-button:hover {
+  background-color: var(--custom-button-bg-hover-color, #5b6eae);
+}
+
+/* Styling the color picker window */
+.color-picker-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2c2f33;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none; /* Initially hidden */
+}
+
+/* Styling the color picker and transparency input */
+.color-picker-window input[type="color"],
+.color-picker-window input[type="range"] {
+  display: block;
+  margin: 10px 0;
+}
+
+/* Styling the close button */
+.color-picker-window .close-button {
+  background-color: #f04747;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  float: right;
+}
