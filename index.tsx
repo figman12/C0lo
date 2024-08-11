@@ -1,7 +1,6 @@
-import { Plugin } from '@vencord/plugin';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.css'; // Ensure this CSS file exists and is properly loaded
 
 interface ColorPickerProps {
   onClose: () => void;
@@ -36,48 +35,68 @@ const ColorPickerWindow: React.FC<ColorPickerProps> = ({ onClose }) => {
   );
 };
 
-export default class ColorPickerPlugin extends Plugin {
+class ColorPickerPlugin {
   private colorPickerWindow?: HTMLDivElement;
 
+  constructor() {
+    this.start();
+  }
+
   start() {
-    // Inject the CSS file
-    this.injectCSS(require('./index.css'));
+    // Inject CSS file
+    this.injectCSS();
 
     // Create the button and append it to the header
-    const button = document.createElement('button');
-    button.textContent = 'Open Color Picker';
-    button.className = 'custom-button';
-    button.onclick = () => this.showColorPickerWindow();
-    
-    const header = document.querySelector('.header-2h-9H9');
-    if (header) {
-      header.appendChild(button);
-    }
+    this.addColorPickerButton();
   }
 
   stop() {
     // Remove the button and color picker window when the plugin is disabled
-    const button = document.querySelector('.custom-button');
-    if (button) {
-      button.remove();
-    }
+    this.removeColorPickerButton();
     if (this.colorPickerWindow) {
       ReactDOM.unmountComponentAtNode(this.colorPickerWindow);
       this.colorPickerWindow.remove();
     }
   }
 
+  injectCSS() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = chrome.runtime.getURL('index.css'); // Adjust path to where index.css is located
+    document.head.appendChild(link);
+  }
+
+  addColorPickerButton() {
+    const button = document.createElement('button');
+    button.textContent = 'Open Color Picker';
+    button.className = 'custom-button';
+    button.onclick = () => this.showColorPickerWindow();
+    
+    // Use a more reliable way to find or append to the header
+    const header = document.querySelector('[data-dy-header]'); // This is an example selector; use the correct one for your case
+    if (header) {
+      header.appendChild(button);
+    }
+  }
+
+  removeColorPickerButton() {
+    const button = document.querySelector('.custom-button');
+    if (button) {
+      button.remove();
+    }
+  }
+
   createColorPickerWindow() {
-    // Create the color picker window element
     this.colorPickerWindow = document.createElement('div');
+    this.colorPickerWindow.className = 'color-picker-container'; // Ensure styling for positioning
     document.body.appendChild(this.colorPickerWindow);
 
-    // Render the ColorPickerWindow component into the color picker window
     ReactDOM.render(
       <ColorPickerWindow onClose={() => {
         if (this.colorPickerWindow) {
           ReactDOM.unmountComponentAtNode(this.colorPickerWindow);
           this.colorPickerWindow.remove();
+          this.colorPickerWindow = undefined; // Clear reference
         }
       }} />,
       this.colorPickerWindow
@@ -93,3 +112,11 @@ export default class ColorPickerPlugin extends Plugin {
   }
 }
 
+// Export the plugin
+export default ColorPickerPlugin;
+
+// Initialize plugin
+const plugin = new ColorPickerPlugin();
+
+// Optionally handle plugin lifecycle (start and stop) based on your setup
+// For example, you can start the plugin here or handle it in a different way
